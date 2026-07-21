@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mojahed — HCAHPS Patient Satisfaction Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B2A4A;
+    --navy-deep:#081D34;
+    --paper:#F4F6F5;
+    --paper-line:#DDE3E1;
+    --teal:#1F8A82;
+    --amber:#C97A3D;
+    --ink:#12201F;
+    --ink-soft:#4A5957;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 32px;}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    background:radial-gradient(circle at 15% 0%, #123a63 0%, var(--navy) 42%, var(--navy-deep) 100%);
+    color:#EAF1EF;
+    padding:72px 0 0 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#8FB8C9;
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:26px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px; height:8px; border-radius:50%;
+    background:var(--teal);
+    box-shadow:0 0 0 4px rgba(31,138,130,0.25);
+  }
+  h1.headline{
+    font-size:clamp(34px, 5vw, 56px);
+    line-height:1.08;
+    max-width:780px;
+    color:#F7FAF9;
+  }
+  h1.headline em{
+    font-style:normal;
+    color:var(--amber);
+  }
+  .hero-sub{
+    max-width:600px;
+    margin-top:22px;
+    font-size:17px;
+    color:#B9CBCB;
+  }
+  .vitals{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border-top:1px solid rgba(255,255,255,0.14);
+  }
+  .vital{
+    padding:22px 20px 26px 0;
+    border-left:1px solid rgba(255,255,255,0.14);
+    padding-left:22px;
+  }
+  .vital:first-child{border-left:none; padding-left:0;}
+  .vital .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:clamp(22px, 3vw, 30px);
+    color:var(--teal);
+    font-weight:600;
+  }
+  .vital .label{
+    margin-top:6px;
+    font-size:12.5px;
+    color:#9FB6B4;
+    line-height:1.4;
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:88px 0;}
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:24px; margin-bottom:44px;
+    border-bottom:1px solid var(--paper-line);
+    padding-bottom:18px;
+  }
+  .section-head .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--teal);
+  }
+  .section-head h2{font-size:clamp(24px,3vw,32px); color:var(--navy-deep); margin-top:6px;}
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{display:flex; flex-direction:column;}
+  .tl-item{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:24px;
+    padding:26px 0;
+    border-bottom:1px solid var(--paper-line);
+  }
+  .tl-item:last-child{border-bottom:none;}
+  .tl-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    color:var(--teal);
+    padding-top:4px;
+  }
+  .tl-body h3{font-size:19px; color:var(--navy-deep); margin-bottom:6px;}
+  .tl-body p{font-size:15px; color:var(--ink-soft); max-width:620px;}
+  .tl-body .stack{
+    margin-top:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--teal);
+    letter-spacing:0.03em;
+  }
+
+  /* ---------- FINDING ---------- */
+  .finding-card{
+    background:var(--navy-deep);
+    border-radius:6px;
+    padding:44px;
+    color:#EAF1EF;
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:40px;
+  }
+  .finding-card h3{color:#F7FAF9; font-size:22px; margin-bottom:14px;}
+  .finding-card p{color:#B9CBCB; font-size:15px; line-height:1.65;}
+  .finding-card .stat-line{
+    margin-top:20px;
+    display:flex; gap:28px;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .finding-card .stat-line div .n{color:var(--amber); font-size:20px; font-weight:600;}
+  .finding-card .stat-line div .l{color:#8FB8C9; font-size:11px; margin-top:4px;}
+
+  .bars{display:flex; flex-direction:column; gap:12px; justify-content:center;}
+  .bar-row{display:grid; grid-template-columns:126px 1fr 40px; align-items:center; gap:10px;}
+  .bar-row .name{font-size:12px; color:#B9CBCB;}
+  .bar-track{background:rgba(255,255,255,0.09); border-radius:3px; height:9px; overflow:hidden;}
+  .bar-fill{height:100%; border-radius:3px; background:linear-gradient(90deg, var(--teal), #59C7BC);}
+  .bar-row.low .bar-fill{background:linear-gradient(90deg, var(--amber), #E0A46B);}
+  .bar-row .val{font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:#8FB8C9; text-align:right;}
+
+  /* ---------- DELIVERABLES ---------- */
+  .files{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+  }
+  .file-card{
+    border:1px solid var(--paper-line);
+    background:#fff;
+    border-radius:5px;
+    padding:22px;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .file-card:hover{border-color:var(--teal); transform:translateY(-2px);}
+  .file-card .ext{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px; color:var(--teal);
+    letter-spacing:0.08em;
+  }
+  .file-card h4{font-size:15.5px; margin-top:10px; color:var(--navy-deep); font-weight:600; font-family:'Inter',sans-serif;}
+  .file-card p{font-size:12.5px; color:var(--ink-soft); margin-top:6px;}
+
+  /* ---------- SKILLS ---------- */
+  .skill-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--paper-line); border:1px solid var(--paper-line);}
+  .skill-cell{background:var(--paper); padding:24px 20px;}
+  .skill-cell .k-label{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--teal); text-transform:uppercase; letter-spacing:0.08em;}
+  .skill-cell ul{margin-top:12px; list-style:none;}
+  .skill-cell li{font-size:13px; color:var(--ink-soft); padding:4px 0;}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    background:var(--navy-deep);
+    color:#B9CBCB;
+    padding:56px 0 40px;
+  }
+  footer h3{color:#F7FAF9; font-size:24px; margin-bottom:10px;}
+  footer p{font-size:14px; max-width:480px; color:#9FB6B4;}
+  .footer-row{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;}
+  .contact-links{display:flex; gap:18px; margin-top:20px;}
+  .contact-links a{
+    color:#EAF1EF; text-decoration:none; font-size:13px;
+    font-family:'IBM Plex Mono', monospace;
+    border-bottom:1px solid rgba(255,255,255,0.3);
+    padding-bottom:2px;
+  }
+  .contact-links a:hover{border-color:var(--teal); color:var(--teal);}
+  .foot-meta{font-family:'IBM Plex Mono', monospace; font-size:11px; color:#5F7573;}
+
+  @media(max-width:760px){
+    .vitals{grid-template-columns:repeat(2,1fr);}
+    .vital{padding-left:16px; margin-top:16px;}
+    .finding-card{grid-template-columns:1fr;}
+    .files{grid-template-columns:1fr;}
+    .skill-grid{grid-template-columns:1fr 1fr;}
+    .tl-item{grid-template-columns:40px 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Data &amp; Project Management Portfolio — Mojahed</div>
+    <h1 class="headline">Hospitals talk to patients about their care. This project finds where <em>that conversation breaks down.</em></h1>
+    <p class="hero-sub">A 2-week, solo, end-to-end analytics engagement on 325,856 CMS patient-survey records — run with the same discipline as a client project: charter, WBS, data cleaning, statistical analysis, and a live dashboard.</p>
+
+    <div class="vitals">
+      <div class="vital"><div class="num mono">4,792</div><div class="label">U.S. hospitals analyzed</div></div>
+      <div class="vital"><div class="num mono">2.66 / 5</div><div class="label">Lowest-scoring dimension: medication explanation</div></div>
+      <div class="vital"><div class="num mono">r = 0.821</div><div class="label">Correlation with overall rating</div></div>
+      <div class="vital"><div class="num mono">14 days</div><div class="label">Charter to dashboard, solo-run</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="tag">01 — Process</div>
+        <h2>Run like a real engagement, not a class exercise</h2>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-num">01</div>
+        <div class="tl-body">
+          <h3>Initiation</h3>
+          <p>Wrote a formal Project Charter — purpose, objectives, scope boundaries, stakeholders, risks, and a fixed two-week timeline — before touching any data.</p>
+          <div class="stack">DELIVERABLE — Project Charter (.docx)</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-num">02</div>
+        <div class="tl-body">
+          <h3>Planning</h3>
+          <p>Broke the engagement into a Work Breakdown Structure across six phases, each with owned tasks, estimated duration, and a defined output.</p>
+          <div class="stack">DELIVERABLE — WBS (.docx)</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-num">03</div>
+        <div class="tl-body">
+          <h3>Data Preparation</h3>
+          <p>Cleaned 325,856 long-format rows into a 4,792-row analysis table — resolving inconsistent facility ID formats, placeholder nulls, and mixed measure types across 68 survey questions.</p>
+          <div class="stack">TOOLS — Excel · Power Query</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-num">04</div>
+        <div class="tl-body">
+          <h3>Analysis</h3>
+          <p>Ran correlation and regional comparison across seven patient-experience dimensions to isolate which ones actually move overall satisfaction — not just which ones score low.</p>
+          <div class="stack">DELIVERABLE — Key Findings Summary (.docx)</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-num">05</div>
+        <div class="tl-body">
+          <h3>Dashboard &amp; Closure</h3>
+          <p>Built an interactive Power BI report — KPI card, ranked dimension chart, state-level comparison, and a live filter — then closed the engagement with a portfolio summary.</p>
+          <div class="stack">DELIVERABLE — Interactive Dashboard (.pbix)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="finding" style="background:var(--paper);">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="tag">02 — Key Finding</div>
+        <h2>The weakest dimension is also the one that matters most</h2>
+      </div>
+    </div>
+
+    <div class="finding-card">
+      <div>
+        <h3>Medication explanation is the highest-leverage fix in the dataset</h3>
+        <p>Across seven measurable dimensions of patient experience, medication explanation scores lowest nationally — and is the second most strongly correlated with a hospital's overall rating. Weak performance, high impact: the combination that should top any quality-improvement backlog.</p>
+        <div class="stat-line">
+          <div><div class="n">2.66</div><div class="l">AVG SCORE / 5</div></div>
+          <div><div class="n">0.821</div><div class="l">CORRELATION (r)</div></div>
+          <div><div class="n">#1</div><div class="l">PRIORITY RANK</div></div>
+        </div>
+      </div>
+      <div class="bars">
+        <div class="bar-row low"><div class="name">Medication Expl.</div><div class="bar-track"><div class="bar-fill" style="width:53%"></div></div><div class="val">2.66</div></div>
+        <div class="bar-row"><div class="name">Quietness</div><div class="bar-track"><div class="bar-fill" style="width:63%"></div></div><div class="val">3.15</div></div>
+        <div class="bar-row"><div class="name">Doctor Comm.</div><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div><div class="val">3.26</div></div>
+        <div class="bar-row"><div class="name">Cleanliness</div><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><div class="val">3.34</div></div>
+        <div class="bar-row"><div class="name">Discharge Info</div><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><div class="val">3.37</div></div>
+        <div class="bar-row"><div class="name">Nurse Comm.</div><div class="bar-track"><div class="bar-fill" style="width:68%"></div></div><div class="val">3.42</div></div>
+        <div class="bar-row"><div class="name">Recommend</div><div class="bar-track"><div class="bar-fill" style="width:73%"></div></div><div class="val">3.64</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="deliverables">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="tag">03 — Deliverables</div>
+        <h2>Everything from this engagement</h2>
+      </div>
+    </div>
+
+    <div class="files">
+      <a class="file-card" href="Project_Charter.docx" style="text-decoration:none;">
+        <div class="ext">DOCX</div>
+        <h4>Project Charter</h4>
+        <p>Scope, objectives, stakeholders, risks, timeline.</p>
+      </a>
+      <a class="file-card" href="WBS.docx" style="text-decoration:none;">
+        <div class="ext">DOCX</div>
+        <h4>Work Breakdown Structure</h4>
+        <p>Six phases, owned tasks, estimated durations.</p>
+      </a>
+      <a class="file-card" href="HCAHPS-Hospital-CLEANED.xlsx" style="text-decoration:none;">
+        <div class="ext">XLSX</div>
+        <h4>Cleaned Dataset</h4>
+        <p>4,792 hospitals × 68 measures, with data dictionary.</p>
+      </a>
+      <a class="file-card" href="Key_Findings_Summary.docx" style="text-decoration:none;">
+        <div class="ext">DOCX</div>
+        <h4>Key Findings Summary</h4>
+        <p>Correlation ranking, regional analysis, recommendations.</p>
+      </a>
+      <a class="file-card" href="HCAHPS_Dashboard.pbix" style="text-decoration:none;">
+        <div class="ext">PBIX</div>
+        <h4>Interactive Dashboard</h4>
+        <p>Power BI report with live state-level filtering.</p>
+      </a>
+      <a class="file-card" href="Portfolio_Summary.docx" style="text-decoration:none;">
+        <div class="ext">DOCX</div>
+        <h4>Portfolio Summary</h4>
+        <p>One-page overview of role, method, and outcome.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="skills" style="background:var(--paper);">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="tag">04 — Skills Applied</div>
+        <h2>Where PM discipline meets data work</h2>
+      </div>
+    </div>
+
+    <div class="skill-grid">
+      <div class="skill-cell">
+        <div class="k-label">Project Management</div>
+        <ul>
+          <li>Charter development</li>
+          <li>WBS decomposition</li>
+          <li>Scope &amp; risk control</li>
+          <li>Timeline planning</li>
+        </ul>
+      </div>
+      <div class="skill-cell">
+        <div class="k-label">Data Analytics</div>
+        <ul>
+          <li>Data cleaning (Power Query)</li>
+          <li>Correlation analysis</li>
+          <li>Regional comparison</li>
+          <li>Data quality auditing</li>
+        </ul>
+      </div>
+      <div class="skill-cell">
+        <div class="k-label">Business Intelligence</div>
+        <ul>
+          <li>Power BI dashboard design</li>
+          <li>Interactive filtering</li>
+          <li>KPI definition</li>
+          <li>Data modeling</li>
+        </ul>
+      </div>
+      <div class="skill-cell">
+        <div class="k-label">Communication</div>
+        <ul>
+          <li>Executive summaries</li>
+          <li>Data storytelling</li>
+          <li>Stakeholder documentation</li>
+          <li>Recommendations writing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-row">
+      <div>
+        <h3>Let's talk about the next one.</h3>
+        <p>Final-year Applied Information Systems (Data Science) student, King Saud University — PMP® &amp; CAPM® certified, building toward Data Project Management and Analytics roles.</p>
+        <div class="contact-links">
+          <a href="#">LinkedIn</a>
+          <a href="#">Email</a>
+        </div>
+      </div>
+      <div class="foot-meta">HCAHPS PATIENT SATISFACTION ANALYTICS — SOLO ENGAGEMENT — 2026</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
